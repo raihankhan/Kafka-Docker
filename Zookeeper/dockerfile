@@ -1,6 +1,6 @@
 FROM openjdk:11.0.10-jre-buster
 
-ENV KAFKA_VERSION 2.7.0
+ENV KAFKA_VERSION 3.2.0
 ENV SCALA_VERSION 2.13
 RUN mkdir /tmp/kafka && \
     apt-get update && \
