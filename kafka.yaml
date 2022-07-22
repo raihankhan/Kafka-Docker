@@ -16,7 +16,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: '/mnt/data'
+    path: '/var/log/kafka'
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -72,7 +72,7 @@ spec:
             claimName: kafka-pv-claim
       containers:
         - name: kafka-container
-          image: raihankhanraka/kafka-kraft:2.8.1
+          image: raihankhanraka/kafka-kraft:3.2.0
           ports:
             - containerPort: 9092
             - containerPort: 9093
@@ -84,7 +84,7 @@ spec:
             - name: NAMESPACE
               value: kafka-kraft
             - name: SHARE_DIR
-              value: /mnt/kafka
+              value: /var/log/kafka
           volumeMounts:
             - name: kafka-storage
-              mountPath: /mnt/kafka
+              mountPath: /var/log/kafka
