@@ -1,5 +1,7 @@
 # Kafka-Docker
 
+[Kafka raft mode](https://github.com/apache/kafka/tree/trunk/raft)
+
 Docker Image for Kafka 3.1.0 : [raihankhanraka/kafka-kraft:2.8.1](https://hub.docker.com/layers/258396924/raihankhanraka/kafka-kraft/2.8.1/images/sha256-9c93d111ce139f7840802342f03e8b1d177db1f9c80a38ea2520ec2d4628c725?context=repo)
 
 Docker Image for Kafka 3.1.0 : [raihankhanraka/kafka-kraft:3.0.1](https://hub.docker.com/layers/kafka-kraft/raihankhanraka/kafka-kraft/3.0.1/images/sha256-0c7cb9e152743a4be9289f1426756aa14728fa724b40cbee785e0ebac789a22e?context=repo)
