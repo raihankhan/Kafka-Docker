@@ -5,6 +5,7 @@ ENV KAFKA_VERSION=${KAFKA_VERSION}
 ENV SCALA_VERSION=2.13
 ENV KAFKA_HOME=/opt/kafka
 ENV PATH=${PATH}:${KAFKA_HOME}/bin
+ENV KAFKA_OPTS="-Djava.security.auth.login.config=/opt/kafka/config/kafka_server_jaas.conf"
 
 LABEL name="kafka" version=${KAFKA_VERSION}
 
@@ -15,6 +16,7 @@ RUN apt-get update \
  && ln -s /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION} ${KAFKA_HOME} \
  && rm -rf /tmp/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
 
+COPY ./kafka_server_jaas.conf /opt/kafka/config
 COPY ./entrypoint.sh /
 RUN ["chmod", "+x", "/entrypoint.sh"]
 
