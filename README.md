@@ -24,3 +24,5 @@ Make sure to set these environment variables while deploying `kafka.yaml` in kub
 - SERVICE: Kubernetes service which will be used to connect to the kafka nodes (pods).
 - NAMESPACE: kubernetes namespace where the pods will be deployed.
 - SHARE_DIR : directory where kafka data will be stored (log directory). example - `/var/log/kafka`. Do not set `/mnt/kafka` as SHARE_DIR. 
+
+[Kafka SASL_SSL](https://mac-blog.org.ua/kafka-sasl-ssl)
