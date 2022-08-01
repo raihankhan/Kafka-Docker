@@ -38,10 +38,10 @@ sed -e "s+^node.id=.*+node.id=$NODE_ID+" \
 -e "s+^listeners=.*+listeners=$LISTENERS+" \
 -e "s+^advertised.listeners=.*+advertised.listeners=$ADVERTISED_LISTENERS+" \
 -e "s+^log.dirs=.*+log.dirs=$SHARE_DIR/$NODE_ID+" \
+-e "s+^security.inter.broker.protocol=.*+security.inter.broker.protocol=$INTER_BROKER_SECURITY_PROTOCOL+" \
 -e "s+^sasl.enabled.mechanisms=.*+sasl.enabled.mechanisms=$ENABLED_MECHANISM+" \
 -e "s+^inter.broker.listener.name=.*+inter.broker.listener.name=$INTER_BROKER_SECURITY_PROTOCOL+" \
 -e "s+^sasl.mechanism.inter.broker.protocol=.*+sasl.mechanism.inter.broker.protocol=$INTER_BROKER_PROTOCOL+" \
--e "s+^security.inter.broker.protocol=.*+security.inter.broker.protocol=$INTER_BROKER_SECURITY_PROTOCOL+" \
 /opt/kafka/config/kraft/server.properties > server.properties.updated \
 && mv server.properties.updated /opt/kafka/config/kraft/server.properties
 
