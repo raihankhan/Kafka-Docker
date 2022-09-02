@@ -14,8 +14,8 @@ Build Your own Image:
 export DOCKER_USERNAME=<your docker username>
 export VERSION=<desired kafka version>
 cd Kafka \
-&& docker build --build-arg KAFKA_VERSION=$VERSION -t DOCKER_USERNAME/kafka-kraft:$VERSION . \
-&& docker push DOCKER_USERNAME/kafka-kraft:$VERSION
+&& docker build --build-arg KAFKA_VERSION=$VERSION -t $DOCKER_USERNAME/kafka-kraft:$VERSION . \
+&& docker push $DOCKER_USERNAME/kafka-kraft:$VERSION
 ```
 
 Make sure to set these environment variables while deploying `kafka.yaml` in kubernetes:
