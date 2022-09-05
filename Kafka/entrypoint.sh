@@ -1,8 +1,11 @@
 #!/bin/bash
 
 NODE_ID=${HOSTNAME:6}
-LISTENERS="PLAINTEXT://:9092,CONTROLLER://:9093"
-ADVERTISED_LISTENERS="PLAINTEXT://kafka-$NODE_ID.$SERVICE.$NAMESPACE.svc.cluster.local:9092"
+LISTENERS="SASL_PLAINTEXT://:9092,CONTROLLER://:9093"
+ADVERTISED_LISTENERS="SASL_PLAINTEXT://kafka-$NODE_ID.$SERVICE.$NAMESPACE.svc.cluster.local:9092"
+AUTHENTICATION_MODE="SASL_PLAINTEXT"
+SASL_MODE="SCRAM-SHA-512"
+
 
 CONTROLLER_QUORUM_VOTERS=""
 for i in $( seq 0 $REPLICAS); do
@@ -27,6 +30,9 @@ sed -e "s+^node.id=.*+node.id=$NODE_ID+" \
 -e "s+^listeners=.*+listeners=$LISTENERS+" \
 -e "s+^advertised.listeners=.*+advertised.listeners=$ADVERTISED_LISTENERS+" \
 -e "s+^log.dirs=.*+log.dirs=$SHARE_DIR/$NODE_ID+" \
+-e "s+^security.inter.broker.protocol=$AUTHENTICATION_MODE+" \
+-e "s+^sasl.enabled.mechanisms=$SASL_MODE+" \
+-e "s+^sasl.mechanism.inter.broker.protocol=$SASL_MODE+" \
 /opt/kafka/config/kraft/server.properties > server.properties.updated \
 && mv server.properties.updated /opt/kafka/config/kraft/server.properties
 
