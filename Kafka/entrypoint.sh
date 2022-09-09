@@ -1,32 +1,35 @@
 #!/bin/bash
 
-NODE_ID=${HOSTNAME:6}
+ID=${HOSTNAME##*-}
+NODE=$(echo $HOSTNAME | rev | cut -d- -f1 --complement | rev )
 LISTENERS="PLAINTEXT://:9092,CONTROLLER://:9093"
-ADVERTISED_LISTENERS="PLAINTEXT://kafka-$NODE_ID.$SERVICE.$NAMESPACE.svc.cluster.local:9092"
+ADVERTISED_LISTENERS="PLAINTEXT://$HOSTNAME.$SERVICE.$NAMESPACE.svc.cluster.local:9092"
 
 CONTROLLER_QUORUM_VOTERS=""
 for i in $( seq 0 $REPLICAS); do
     if [[ $i != $REPLICAS ]]; then
-        CONTROLLER_QUORUM_VOTERS="$CONTROLLER_QUORUM_VOTERS$i@kafka-$i.$SERVICE.$NAMESPACE.svc.cluster.local:9093,"
+        CONTROLLER_QUORUM_VOTERS="$CONTROLLER_QUORUM_VOTERS$i@$NODE-$i.$SERVICE.$NAMESPACE.svc.cluster.local:9093,"
     else
         CONTROLLER_QUORUM_VOTERS=${CONTROLLER_QUORUM_VOTERS::-1}
     fi
 done
 
-mkdir -p $SHARE_DIR/$NODE_ID
+mkdir -p $SHARE_DIR/$ID
 
-if [[ ! -f "$SHARE_DIR/cluster_id" && "$NODE_ID" = "0" ]]; then
+if [[ ! -f "$SHARE_DIR/cluster_id" && "$ID" = "0" ]]; then
     CLUSTER_ID=$(kafka-storage.sh random-uuid)
     echo $CLUSTER_ID > $SHARE_DIR/cluster_id
 else
     CLUSTER_ID=$(cat $SHARE_DIR/cluster_id)
 fi
 
-sed -e "s+^node.id=.*+node.id=$NODE_ID+" \
+rm -rf $SHARE_DIR/$ID/__cluster_metadata-0
+
+sed -e "s+^node.id=.*+node.id=$ID+" \
 -e "s+^controller.quorum.voters=.*+controller.quorum.voters=$CONTROLLER_QUORUM_VOTERS+" \
 -e "s+^listeners=.*+listeners=$LISTENERS+" \
 -e "s+^advertised.listeners=.*+advertised.listeners=$ADVERTISED_LISTENERS+" \
--e "s+^log.dirs=.*+log.dirs=$SHARE_DIR/$NODE_ID+" \
+-e "s+^log.dirs=.*+log.dirs=$SHARE_DIR/$ID+" \
 /opt/kafka/config/kraft/server.properties > server.properties.updated \
 && mv server.properties.updated /opt/kafka/config/kraft/server.properties
 
