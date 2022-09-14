@@ -83,7 +83,7 @@ spec:
               value: kafka-svc
             - name: NAMESPACE
               value: demo
-            - name: SHARE_DIR
+            - name: DATA_DIR
               value: /var/log/kafka
           volumeMounts:
             - name: kafka-storage
