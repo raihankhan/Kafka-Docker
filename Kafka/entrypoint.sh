@@ -2,17 +2,20 @@
 
 ID=${HOSTNAME##*-}
 NODE=$(echo $HOSTNAME | rev | cut -d- -f1 --complement | rev )
-LISTENERS="PLAINTEXT://:9092,CONTROLLER://:9093"
-ADVERTISED_LISTENERS="PLAINTEXT://$SERVICE.$NAMESPACE.svc.cluster.local:9092"
 
-CONTROLLER_QUORUM_VOTERS=""
-for i in $( seq 0 $REPLICAS); do
-    if [[ $i != $REPLICAS ]]; then
-        CONTROLLER_QUORUM_VOTERS="$CONTROLLER_QUORUM_VOTERS$i@$NODE-$i.$SERVICE.$NAMESPACE.svc.cluster.local:9093,"
-    else
-        CONTROLLER_QUORUM_VOTERS=${CONTROLLER_QUORUM_VOTERS::-1}
-    fi
-done
+configfile="/opt/kafka/serverconfig/config.properties"
+
+while IFS='=' read -r key value
+do
+    key=$(echo $key | tr '.' '_')
+    eval ${key}=\${value}
+done < "$configfile"
+
+LISTENERS=${listeners}
+ADVERTISED_LISTENERS=${advertised_listeners}
+CONTROLLER_QUORUM_VOTERS=${controller_quorum_voters}
+CLUSTER_ID=${cluster_id}
+DATA_DIR=${log_dirs}
 
 
 if [[ ! -f "$DATA_DIR/$ID" ]]; then
@@ -20,9 +23,6 @@ if [[ ! -f "$DATA_DIR/$ID" ]]; then
 else
   rm -rf $DATA_DIR/$ID/__cluster_metadata-0
 fi
-
-# create a common cluster_ID for all the nodes.
-
 
 sed -e "s+^node.id=.*+node.id=$ID+" \
 -e "s+^controller.quorum.voters=.*+controller.quorum.voters=$CONTROLLER_QUORUM_VOTERS+" \
