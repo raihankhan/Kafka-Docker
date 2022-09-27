@@ -22,12 +22,7 @@ else
 fi
 
 # create a common cluster_ID for all the nodes.
-if [[ ! -f "$DATA_DIR/cluster_id" && "$ID" = "0" ]]; then
-    CLUSTER_ID=$(kafka-storage.sh random-uuid)
-    echo $CLUSTER_ID > $DATA_DIR/cluster_id
-else
-    CLUSTER_ID=$(cat $DATA_DIR/cluster_id)
-fi
+
 
 sed -e "s+^node.id=.*+node.id=$ID+" \
 -e "s+^controller.quorum.voters=.*+controller.quorum.voters=$CONTROLLER_QUORUM_VOTERS+" \
