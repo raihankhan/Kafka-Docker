@@ -17,11 +17,17 @@ CONTROLLER_QUORUM_VOTERS=${controller_quorum_voters}
 CLUSTER_ID=${cluster_id}
 DATA_DIR=${log_dirs}
 
-
-if [[ ! -f "$DATA_DIR/$ID" ]]; then
+if [[ ! -d "$DATA_DIR/$ID" ]]; then
   mkdir -p $DATA_DIR/$ID
+  echo "Created kafka data directory at $DATA_DIR/$ID"
 else
-  rm -rf $DATA_DIR/$ID/__cluster_metadata-0
+  echo "Isolating old metadata..."
+  if [[ -d "$DATA_DIR/$ID/__cluster_metadata-0" ]]; then
+    mv $DATA_DIR/$ID/__cluster_metadata-0 $DATA_DIR/$ID/__cluster_metadata-0_old
+  fi
+  if [[ -f "$DATA_DIR/$ID/meta.properties" ]]; then
+    mv $DATA_DIR/$ID/meta.properties $DATA_DIR/$ID/meta.properties_old
+  fi
 fi
 
 sed -e "s+^node.id=.*+node.id=$ID+" \
@@ -34,4 +40,5 @@ sed -e "s+^node.id=.*+node.id=$ID+" \
 
 kafka-storage.sh format -t $CLUSTER_ID -c /opt/kafka/config/kraft/server.properties
 
+echo "Starting Kafka Server"
 exec kafka-server-start.sh /opt/kafka/config/kraft/server.properties
