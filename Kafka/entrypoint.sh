@@ -21,12 +21,12 @@ if [[ ! -d "$DATA_DIR/$ID" ]]; then
   mkdir -p $DATA_DIR/$ID
   echo "Created kafka data directory at $DATA_DIR/$ID"
 else
-  echo "Isolating old metadata..."
+  echo "Deleting old metadata..."
   if [[ -d "$DATA_DIR/$ID/__cluster_metadata-0" ]]; then
-    mv $DATA_DIR/$ID/__cluster_metadata-0 $DATA_DIR/$ID/__cluster_metadata-0_old
+     rm -rf $DATA_DIR/$ID/__cluster_metadata-0
   fi
   if [[ -f "$DATA_DIR/$ID/meta.properties" ]]; then
-    mv $DATA_DIR/$ID/meta.properties $DATA_DIR/$ID/meta.properties_old
+    rm $DATA_DIR/$ID/meta.properties
   fi
 fi
 
