@@ -19,7 +19,6 @@ DATA_DIR=${log_dirs}
 COMBINED_NODE_COUNT=${combined_count}
 CONTROLLER_NODE_COUNT=${controller_count}
 BROKER_NODE_COUNT=${broker_count}
-CONTROLLER_LISTENER_NAMES=CONTROLLER
 
 delete_cluster_metadata() {
   NODE_ID=$1
@@ -47,14 +46,13 @@ if [[ $process_roles = "controller" ]]; then
   -e "s+^listeners=.*+listeners=$LISTENERS+" \
   -e "s+^advertised.listeners=.*+advertised.listeners=$ADVERTISED_LISTENERS+" \
   -e "s+^log.dirs=.*+log.dirs=$DATA_DIR/$ID+" \
-  -e "s+^controller.listener.names=.*+controller.listener.names=$CONTROLLER_LISTENER_NAMES+" \
-  /opt/kafka/config/kraft/server.properties > server.properties.updated \
-  && mv server.properties.updated /opt/kafka/config/kraft/server.properties
+  /opt/kafka/config/kraft/controller.properties > controller.properties.updated \
+  && mv controller.properties.updated /opt/kafka/config/kraft/controller.properties
 
-  kafka-storage.sh format -t $CLUSTER_ID -c /opt/kafka/config/kraft/server.properties --ignore-formatted
+  kafka-storage.sh format -t $CLUSTER_ID -c /opt/kafka/config/kraft/controller.properties --ignore-formatted
 
   echo "Starting Kafka Server"
-  exec kafka-server-start.sh /opt/kafka/config/kraft/server.properties
+  exec kafka-server-start.sh /opt/kafka/config/kraft/controller.properties
 elif [[ $process_roles = "broker" ]]; then
   ID=$(( ID + COMBINED_NODE_COUNT + CONTROLLER_NODE_COUNT ))
   delete_cluster_metadata $ID
@@ -64,7 +62,6 @@ elif [[ $process_roles = "broker" ]]; then
   -e "s+^listeners=.*+listeners=$LISTENERS+" \
   -e "s+^advertised.listeners=.*+advertised.listeners=$ADVERTISED_LISTENERS+" \
   -e "s+^log.dirs=.*+log.dirs=$DATA_DIR/$ID+" \
-  -e "s+^controller.listener.names=.*+controller.listener.names=$CONTROLLER_LISTENER_NAMES+" \
   /opt/kafka/config/kraft/broker.properties > broker.properties.updated \
   && mv broker.properties.updated /opt/kafka/config/kraft/broker.properties
 
@@ -82,7 +79,6 @@ else [[ $process_roles = "controller,broker" ]]
   -e "s+^listeners=.*+listeners=$LISTENERS+" \
   -e "s+^advertised.listeners=.*+advertised.listeners=$ADVERTISED_LISTENERS+" \
   -e "s+^log.dirs=.*+log.dirs=$DATA_DIR/$ID+" \
-  -e "s+^controller.listener.names=.*+controller.listener.names=$CONTROLLER_LISTENER_NAMES+" \
   /opt/kafka/config/kraft/server.properties > server.properties.updated \
   && mv server.properties.updated /opt/kafka/config/kraft/server.properties
 
@@ -91,3 +87,5 @@ else [[ $process_roles = "controller,broker" ]]
   echo "Starting Kafka Server"
   exec kafka-server-start.sh /opt/kafka/config/kraft/server.properties
 fi
+
+listener.security.protocol.map
