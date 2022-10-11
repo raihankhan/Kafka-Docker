@@ -87,5 +87,3 @@ else [[ $process_roles = "controller,broker" ]]
   echo "Starting Kafka Server"
   exec kafka-server-start.sh /opt/kafka/config/kraft/server.properties
 fi
-
-listener.security.protocol.map
