@@ -16,6 +16,7 @@ RUN apt-get update \
  && rm -rf /opt/kafka_${SCALA_VERSION}-${KAFKA_VERSION}.tgz
 
 COPY ./entrypoint.sh /opt/kafka/config
+COPY ./kafka_server_jaas.conf /opt/kafka/config
 
 RUN ["chmod", "+x", "/opt/kafka/config/entrypoint.sh"]
 
