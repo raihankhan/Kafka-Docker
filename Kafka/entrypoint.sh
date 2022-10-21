@@ -28,6 +28,11 @@ delete_cluster_metadata() {
   if [[ ! -d "$DATA_DIR/$NODE_ID" ]]; then
     mkdir -p $DATA_DIR/"$NODE_ID"
     echo "Created kafka data directory at $DATA_DIR/$NODE_ID"
+  else
+    echo "Deleting old metadata..."
+    if [[ -d "$DATA_DIR/$NODE_ID/__cluster_metadata-0" ]]; then
+       rm -rf $DATA_DIR/$NODE_ID/__cluster_metadata-0
+    fi
   fi
 }
 
