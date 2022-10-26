@@ -120,6 +120,8 @@ else [[ $process_roles = "controller,broker" ]]
 
 
 
+
+
   kafka-storage.sh format -t $CLUSTER_ID -c /opt/kafka/config/kraft/server.properties --ignore-formatted
 
   echo "Starting Kafka Server"
