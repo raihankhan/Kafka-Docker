@@ -1,4 +1,4 @@
-FROM openjdk:11.0.10-jre-buster
+FROM openjdk:8-jre-buster
 
 ARG KAFKA_VERSION=3.3.0
 ENV KAFKA_VERSION=${KAFKA_VERSION}
@@ -20,6 +20,6 @@ COPY ./kafka_server_jaas.conf /opt/kafka/config
 
 RUN ["chmod", "+x", "/opt/kafka/config/entrypoint.sh"]
 
-EXPOSE 9092 9093
+EXPOSE 9092 9093 29092
 
 ENTRYPOINT ["/opt/kafka/config/entrypoint.sh"]

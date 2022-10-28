@@ -4,14 +4,22 @@ operator_config="/opt/kafka/config/kafkaconfig/config.properties"
 ssl_config="/opt/kafka/config/kafkaconfig/ssl.properties"
 temp_operator_config="/opt/kafka/config/temp-config/config.properties"
 temp_ssl_config="/opt/kafka/config/temp-config/ssl.properties"
+temp_clientauth_config="/opt/kafka/config/temp-config/clientauth.properties"
 controller_config="/opt/kafka/config/kraft/controller.properties"
 broker_config="/opt/kafka/config/kraft/broker.properties"
 server_config="/opt/kafka/config/kraft/server.properties"
 
 cp $temp_operator_config $operator_config
 if [[ -f $temp_ssl_config ]]; then
-  cp $temp_ssl_config $operator_config
+  cat $temp_ssl_config $operator_config > config.properties.updated
+  mv config.properties.updated $operator_config
+  cp $temp_ssl_config /opt/kafka/config
 fi
+
+if [[ -f $temp_clientauth_config ]]; then
+  cp $temp_clientauth_config /opt/kafka/config
+fi
+
 
 while IFS='=' read -r key value
 do
@@ -43,7 +51,11 @@ delete_cluster_metadata() {
 AUTHFILE="/opt/kafka/config/kafka_server_jaas.conf"
 sed -i "s/\<KAFKA_USER\>/"$KAFKA_USER"/g" $AUTHFILE
 sed -i "s/\<KAFKA_PASSWORD\>/"$KAFKA_PASSWORD"/g" $AUTHFILE
-export KAFKA_OPTS="-Djava.security.auth.login.config=$AUTHFILE"
+cat $AUTHFILE
+#export KAFKA_OPTS="-Djava.security.auth.login.config=$AUTHFILE"
+export KAFKA_OPTS="$KAFKA_OPTS -Djava.security.auth.login.config=$AUTHFILE"
+
+echo $KAFKA_OPTS
 
 if [[ $process_roles = "controller" ]]; then
 
