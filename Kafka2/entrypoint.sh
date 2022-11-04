@@ -20,6 +20,10 @@ if [[ -f $temp_clientauth_config ]]; then
   cp $temp_clientauth_config /opt/kafka/config
 fi
 
+CLIENTAUTHFILE="/opt/kafka/config/clientauth.properties"
+sed -i "s/\<KAFKA_USER\>/"$KAFKA_USER"/g" $CLIENTAUTHFILE
+sed -i "s/\<KAFKA_PASSWORD\>/"$KAFKA_PASSWORD"/g" $CLIENTAUTHFILE
+
 
 while IFS='=' read -r key value
 do
